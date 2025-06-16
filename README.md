@@ -2,7 +2,7 @@
 
 Repositório criado para documentar minha jornada de aprendizado na linguagem Dart e no framework Flutter.
 
-🗓️ **Período:** [Data de Início] até [Data Final]  
+🗓️ **Período:** [15/06/2025] até [Data Final]  
 🎯 **Meta:** 90 dias seguidos de prática, estudo e desenvolvimento
 
 ---
