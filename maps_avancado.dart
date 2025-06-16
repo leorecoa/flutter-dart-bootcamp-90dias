@@ -87,13 +87,13 @@ void main() {
   
   // 9. Operador de acesso condicional (?.)
   print('\n--- Acesso condicional ---');
-  Map<String, dynamic>? usuarioNulo;
+  Map<String, dynamic>? usuarioNulo = null;
   print('Acesso seguro: ${usuarioNulo?['nome']}'); // Não causa erro
   
   // 10. Map.putIfAbsent - adiciona um valor apenas se a chave não existir
   print('\n--- putIfAbsent ---');
   var config = {'tema': 'escuro', 'fonte': 'Arial'};
-  config.putIfAbsent('tamanho', () => 14);
+  config.putIfAbsent('tamanho', () => 14.toString()); // Adiciona se não existir
   config.putIfAbsent('tema', () => 'claro'); // Não altera o valor existente
   print(config);
 }
