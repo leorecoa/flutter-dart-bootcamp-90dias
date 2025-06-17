@@ -82,8 +82,12 @@ Future<void> _mostrarUsoCPU() async {
       final usoCPU = double.tryParse(resultado.stdout.toString().trim()) ?? 0;
       print('Uso total: ${usoCPU.toStringAsFixed(1)}%');
     } else {
-      // Em sistemas não-Windows, usamos uma abordagem simplificada
-      print('Uso total: N/A (não disponível nesta versão)');
+      final resultado = await Process.run('sh', [
+        '-c',
+        """top -bn1 | grep "Cpu(s)" | sed "s/.*, *\\([0-9.]*\\)%* id.*/\\1/" | awk '{print 100 - \$1}'"""
+      ]);
+      final usoCPU = double.tryParse(resultado.stdout.toString().trim()) ?? 0;
+      print('Uso total: ${usoCPU.toStringAsFixed(1)}%');
     }
   } catch (e) {
     print('Erro ao obter uso de CPU: $e');
@@ -118,7 +122,24 @@ Future<void> _mostrarUsoMemoria() async {
         }
       }
     } else {
-      print('Informações de memória não disponíveis nesta versão');
+      final resultado = await Process.run('sh', ['-c', 'free -m']);
+      final linhas = resultado.stdout.toString().trim().split('\n');
+      if (linhas.length >= 2) {
+        final valores = linhas[1].trim().split(RegExp(r'\s+'));
+        if (valores.length >= 4) {
+          final totalMB = int.tryParse(valores[1]) ?? 0;
+          final usadoMB = int.tryParse(valores[2]) ?? 0;
+          final livreMB = int.tryParse(valores[3]) ?? 0;
+          
+          final totalGB = totalMB / 1024;
+          final usadoGB = usadoMB / 1024;
+          final livreGB = livreMB / 1024;
+          
+          print('Total: ${totalGB.toStringAsFixed(2)} GB');
+          print('Usado: ${usadoGB.toStringAsFixed(2)} GB (${(usadoMB * 100 / totalMB).toStringAsFixed(1)}%)');
+          print('Livre: ${livreGB.toStringAsFixed(2)} GB');
+        }
+      }
     }
   } catch (e) {
     print('Erro ao obter uso de memória: $e');
@@ -148,7 +169,18 @@ Future<void> _mostrarProcessos() async {
         }
       }
     } else {
-      print('Informações de processos não disponíveis nesta versão');
+      final resultado = await Process.run('sh', ['-c', 'ps aux --sort=-%cpu | head -6']);
+      final linhas = resultado.stdout.toString().trim().split('\n');
+      for (var i = 1; i < linhas.length; i++) {
+        final valores = linhas[i].trim().split(RegExp(r'\s+'));
+        if (valores.length >= 11) {
+          final cpu = double.tryParse(valores[2]) ?? 0;
+          final mem = double.tryParse(valores[3]) ?? 0;
+          final comando = valores.sublist(10).join(' ');
+          
+          print('${i}. $comando - CPU: ${cpu.toStringAsFixed(1)}%, Memória: ${mem.toStringAsFixed(1)}%');
+        }
+      }
     }
   } catch (e) {
     print('Erro ao obter lista de processos: $e');
@@ -184,7 +216,19 @@ Future<void> _mostrarUsoDisco() async {
         }
       }
     } else {
-      print('Informações de disco não disponíveis nesta versão');
+      final resultado = await Process.run('sh', ['-c', 'df -h --output=source,size,used,avail,pcent | grep -v "tmpfs"']);
+      final linhas = resultado.stdout.toString().trim().split('\n');
+      for (var i = 1; i < linhas.length; i++) {
+        final valores = linhas[i].trim().split(RegExp(r'\s+'));
+        if (valores.length >= 5) {
+          final dispositivo = valores[0];
+          final tamanho = valores[1];
+          final usado = valores[2];
+          final percentual = valores[4];
+          
+          print('$dispositivo: $usado usado de $tamanho ($percentual)');
+        }
+      }
     }
   } catch (e) {
     print('Erro ao obter uso de disco: $e');
