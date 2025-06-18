@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import 'firebase_service.dart';
 
@@ -29,8 +28,9 @@ class AuthService {
     _auth.authStateChanges().listen((firebase_auth.User? firebaseUser) async {
       if (firebaseUser != null) {
         // Get user data from Firestore
-        final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
-        
+        final userDoc =
+            await _firestore.collection('users').doc(firebaseUser.uid).get();
+
         if (userDoc.exists) {
           _currentUser = User.fromMap({
             'id': firebaseUser.uid,
@@ -45,23 +45,29 @@ class AuthService {
             phoneNumber: firebaseUser.phoneNumber ?? '',
             photoUrl: firebaseUser.photoURL,
           );
-          
-          await _firestore.collection('users').doc(firebaseUser.uid).set(newUser.toMap());
+
+          await _firestore
+              .collection('users')
+              .doc(firebaseUser.uid)
+              .set(newUser.toMap());
           _currentUser = newUser;
         }
       } else {
         _currentUser = null;
       }
-      
+
       _authStateController.add(_currentUser);
     });
-    
+
     // Check if user is already logged in
     final currentFirebaseUser = _auth.currentUser;
     if (currentFirebaseUser != null) {
       // Get user data from Firestore
-      final userDoc = await _firestore.collection('users').doc(currentFirebaseUser.uid).get();
-      
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(currentFirebaseUser.uid)
+          .get();
+
       if (userDoc.exists) {
         _currentUser = User.fromMap({
           'id': currentFirebaseUser.uid,
@@ -79,15 +85,16 @@ class AuthService {
         email: email,
         password: password,
       );
-      
+
       final firebaseUser = userCredential.user;
       if (firebaseUser == null) {
         throw Exception('Falha ao fazer login');
       }
-      
+
       // Get user data from Firestore
-      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
-      
+      final userDoc =
+          await _firestore.collection('users').doc(firebaseUser.uid).get();
+
       if (userDoc.exists) {
         _currentUser = User.fromMap({
           'id': firebaseUser.uid,
@@ -96,7 +103,7 @@ class AuthService {
       } else {
         throw Exception('Usuário não encontrado');
       }
-      
+
       _authStateController.add(_currentUser);
       return _currentUser;
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -118,21 +125,22 @@ class AuthService {
   }
 
   // Sign up with email and password
-  Future<User?> signUp(String name, String email, String password, String phoneNumber) async {
+  Future<User?> signUp(
+      String name, String email, String password, String phoneNumber) async {
     try {
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      
+
       final firebaseUser = userCredential.user;
       if (firebaseUser == null) {
         throw Exception('Falha ao criar conta');
       }
-      
+
       // Update display name
       await firebaseUser.updateDisplayName(name);
-      
+
       // Create user document in Firestore
       final newUser = User(
         id: firebaseUser.uid,
@@ -141,9 +149,12 @@ class AuthService {
         phoneNumber: phoneNumber,
         photoUrl: null,
       );
-      
-      await _firestore.collection('users').doc(firebaseUser.uid).set(newUser.toMap());
-      
+
+      await _firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .set(newUser.toMap());
+
       _currentUser = newUser;
       _authStateController.add(_currentUser);
       return _currentUser;
@@ -181,27 +192,30 @@ class AuthService {
       if (firebaseUser == null || _currentUser == null) {
         throw Exception('Usuário não autenticado');
       }
-      
+
       // Update display name if provided
       if (name != null) {
         await firebaseUser.updateDisplayName(name);
       }
-      
+
       // Update user document in Firestore
       final updates = <String, dynamic>{};
       if (name != null) updates['name'] = name;
       if (phoneNumber != null) updates['phoneNumber'] = phoneNumber;
       if (photoUrl != null) updates['photoUrl'] = photoUrl;
-      
-      await _firestore.collection('users').doc(firebaseUser.uid).update(updates);
-      
+
+      await _firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .update(updates);
+
       // Update current user
       _currentUser = _currentUser!.copyWith(
         name: name ?? _currentUser!.name,
         phoneNumber: phoneNumber ?? _currentUser!.phoneNumber,
         photoUrl: photoUrl ?? _currentUser!.photoUrl,
       );
-      
+
       _authStateController.add(_currentUser);
       return _currentUser;
     } catch (e) {

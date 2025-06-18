@@ -56,10 +56,10 @@ class _RateBarberDialogState extends State<RateBarberDialog> {
     try {
       // Track rating event
       await AnalyticsService().trackRateBarber(widget.barber, _rating);
-      
+
       // Submit rating
       widget.onSubmit(_rating, _commentController.text);
-      
+
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -67,7 +67,7 @@ class _RateBarberDialogState extends State<RateBarberDialog> {
       setState(() {
         _isSubmitting = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -112,9 +112,9 @@ class _RateBarberDialogState extends State<RateBarberDialog> {
                 ),
               ),
               child: ClipOval(
-                child: widget.barber.imageUrl != null && widget.barber.imageUrl!.isNotEmpty
+                child: widget.barber.imageUrl.isNotEmpty
                     ? Image.network(
-                        widget.barber.imageUrl!,
+                        widget.barber.imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(

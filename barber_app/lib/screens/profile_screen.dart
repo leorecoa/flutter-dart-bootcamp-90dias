@@ -171,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Implement delete account
               },
             ),
-            
+
             // Firebase usage monitor (admin only)
             if (_user?.email == 'admin@example.com')
               _buildActionCard(

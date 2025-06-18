@@ -25,7 +25,9 @@ class BarberCard extends StatelessWidget {
         width: showDetails ? double.infinity : 140,
         margin: const EdgeInsets.only(right: 16, bottom: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary.withAlpha(30) : AppColors.cardBackground,
+          color: isSelected
+              ? AppColors.secondary.withAlpha(30)
+              : AppColors.cardBackground,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           border: Border.all(
             color: isSelected ? AppColors.secondary : Colors.transparent,
@@ -67,9 +69,9 @@ class BarberCard extends StatelessWidget {
             ],
           ),
           child: ClipOval(
-            child: barber.imageUrl != null && barber.imageUrl!.isNotEmpty
+            child: barber.imageUrl.isNotEmpty
                 ? Image.network(
-                    barber.imageUrl!,
+                    barber.imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(
@@ -130,9 +132,9 @@ class BarberCard extends StatelessWidget {
               ],
             ),
             child: ClipOval(
-              child: barber.imageUrl != null && barber.imageUrl!.isNotEmpty
+              child: barber.imageUrl.isNotEmpty
                   ? Image.network(
-                      barber.imageUrl!,
+                      barber.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return const Icon(
@@ -157,7 +159,9 @@ class BarberCard extends StatelessWidget {
                 Text(
                   barber.name,
                   style: TextStyle(
-                    color: isSelected ? AppColors.secondary : AppColors.textPrimary,
+                    color: isSelected
+                        ? AppColors.secondary
+                        : AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -173,7 +177,8 @@ class BarberCard extends StatelessWidget {
                   runSpacing: 8,
                   children: barber.specialties.map((specialty) {
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),

@@ -120,7 +120,6 @@ class ScissorsPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.35;
 
     // Draw scissors
     final handleLength = size.width * 0.4;

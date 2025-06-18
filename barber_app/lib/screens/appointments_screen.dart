@@ -31,11 +31,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
     super.dispose();
   }
 
-  List<Appointment> _getFilteredAppointments(AppointmentStatus status) {
+  Future<List<Appointment>> _getFilteredAppointments(
+      AppointmentStatus status) async {
     if (_user == null) return [];
 
     final appointments =
-        _appointmentService.getUserAppointments(_user!.phoneNumber);
+        await _appointmentService.getUserAppointments(_user!.phoneNumber);
 
     if (status == AppointmentStatus.pending) {
       return appointments
@@ -93,60 +94,68 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
   }
 
   Widget _buildAppointmentList(AppointmentStatus status) {
-    final appointments = _getFilteredAppointments(status);
+    return FutureBuilder<List<Appointment>>(
+      future: _getFilteredAppointments(status),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final appointments = snapshot.data ?? [];
 
-    if (appointments.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              status == AppointmentStatus.pending
-                  ? Icons.calendar_today
-                  : status == AppointmentStatus.completed
-                      ? Icons.check_circle
-                      : Icons.cancel,
-              size: 64,
-              color: AppColors.textSecondary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              status == AppointmentStatus.pending
-                  ? 'Nenhum agendamento próximo'
-                  : status == AppointmentStatus.completed
-                      ? 'Nenhum agendamento concluído'
-                      : 'Nenhum agendamento cancelado',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (status == AppointmentStatus.pending)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondary,
-                  foregroundColor: AppColors.primary,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        if (appointments.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  status == AppointmentStatus.pending
+                      ? Icons.calendar_today
+                      : status == AppointmentStatus.completed
+                          ? Icons.check_circle
+                          : Icons.cancel,
+                  size: 64,
+                  color: AppColors.textSecondary,
                 ),
-                onPressed: () {
-                  // Navegar para a tela inicial para criar um novo agendamento
-                  Navigator.of(context).pop();
-                },
-                child: const Text('AGENDAR AGORA'),
-              ),
-          ],
-        ),
-      );
-    }
+                const SizedBox(height: 16),
+                Text(
+                  status == AppointmentStatus.pending
+                      ? 'Nenhum agendamento próximo'
+                      : status == AppointmentStatus.completed
+                          ? 'Nenhum agendamento concluído'
+                          : 'Nenhum agendamento cancelado',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                if (status == AppointmentStatus.pending)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondary,
+                      foregroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                    ),
+                    onPressed: () {
+                      // Navegar para a tela inicial para criar um novo agendamento
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('AGENDAR AGORA'),
+                  ),
+              ],
+            ),
+          );
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSizes.paddingMedium),
-      itemCount: appointments.length,
-      itemBuilder: (context, index) {
-        final appointment = appointments[index];
-        return _buildAppointmentCard(appointment);
+        return ListView.builder(
+          padding: const EdgeInsets.all(AppSizes.paddingMedium),
+          itemCount: appointments.length,
+          itemBuilder: (context, index) {
+            final appointment = appointments[index];
+            return _buildAppointmentCard(appointment);
+          },
+        );
       },
     );
   }

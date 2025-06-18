@@ -38,12 +38,11 @@ class _SplashScreenState extends State<SplashScreen>
       if (status == AnimationStatus.completed) {
         // Verificar se o usuário está logado
         final currentUser = AuthService().currentUser;
-        
+
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => currentUser != null
-                ? const HomeScreen()
-                : const LoginScreen(),
+            builder: (_) =>
+                currentUser != null ? const HomeScreen() : const LoginScreen(),
           ),
         );
       }

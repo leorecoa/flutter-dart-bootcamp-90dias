@@ -28,7 +28,8 @@ class CustomNotification extends StatelessWidget {
     bool showIcon = true,
   }) {
     final overlay = Overlay.of(context);
-    final overlayEntry = OverlayEntry(
+    late final OverlayEntry overlayEntry;
+    overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         top: MediaQuery.of(context).padding.top + 20,
         left: 20,
