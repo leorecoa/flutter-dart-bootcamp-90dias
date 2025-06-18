@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'models/barber.dart';
@@ -17,11 +18,13 @@ import 'services/appointment_service.dart';
 import 'services/auth_service.dart';
 import 'services/barber_service.dart';
 import 'services/firebase_service.dart';
-import 'utils/constants.dart';
 import 'utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Carregar variáveis de ambiente
+  await dotenv.load(fileName: '.env');
 
   // Configurar orientação do app para apenas retrato
   SystemChrome.setPreferredOrientations([

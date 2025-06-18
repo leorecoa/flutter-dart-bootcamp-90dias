@@ -3,6 +3,10 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+// Import the configuration file that is not committed to git
+import 'firebase_options_dev.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -43,42 +47,53 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // NOTA: Substitua estes valores pelos valores reais do seu projeto Firebase
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    appId: '1:000000000000:web:xxxxxxxxxxxxxxxx',
-    messagingSenderId: '000000000000',
-    projectId: 'barber-app-xxxxx',
-    authDomain: 'barber-app-xxxxx.firebaseapp.com',
-    storageBucket: 'barber-app-xxxxx.appspot.com',
-    measurementId: 'G-XXXXXXXXXX',
+  // Using environment variables or config file for sensitive data
+  static final FirebaseOptions web = FirebaseOptions(
+    apiKey: _getApiKey(),
+    appId: FirebaseOptionsConfig.appId,
+    messagingSenderId: FirebaseOptionsConfig.messagingSenderId,
+    projectId: FirebaseOptionsConfig.projectId,
+    authDomain: FirebaseOptionsConfig.authDomain,
+    storageBucket: FirebaseOptionsConfig.storageBucket,
+    measurementId: FirebaseOptionsConfig.measurementId,
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    appId: '1:000000000000:android:xxxxxxxxxxxxxxxx',
-    messagingSenderId: '000000000000',
-    projectId: 'barber-app-xxxxx',
-    storageBucket: 'barber-app-xxxxx.appspot.com',
+  static final FirebaseOptions android = FirebaseOptions(
+    apiKey: _getApiKey(),
+    appId: FirebaseOptionsConfig.appId,
+    messagingSenderId: FirebaseOptionsConfig.messagingSenderId,
+    projectId: FirebaseOptionsConfig.projectId,
+    storageBucket: FirebaseOptionsConfig.storageBucket,
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    appId: '1:000000000000:ios:xxxxxxxxxxxxxxxx',
-    messagingSenderId: '000000000000',
-    projectId: 'barber-app-xxxxx',
-    storageBucket: 'barber-app-xxxxx.appspot.com',
-    iosClientId: 'xxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com',
-    iosBundleId: 'com.example.barberApp',
+  static final FirebaseOptions ios = FirebaseOptions(
+    apiKey: _getApiKey(),
+    appId: FirebaseOptionsConfig.appId,
+    messagingSenderId: FirebaseOptionsConfig.messagingSenderId,
+    projectId: FirebaseOptionsConfig.projectId,
+    storageBucket: FirebaseOptionsConfig.storageBucket,
+    iosClientId: FirebaseOptionsConfig.iosClientId,
+    iosBundleId: FirebaseOptionsConfig.iosBundleId,
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    appId: '1:000000000000:ios:xxxxxxxxxxxxxxxx',
-    messagingSenderId: '000000000000',
-    projectId: 'barber-app-xxxxx',
-    storageBucket: 'barber-app-xxxxx.appspot.com',
-    iosClientId: 'xxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com',
-    iosBundleId: 'com.example.barberApp',
+  static final FirebaseOptions macos = FirebaseOptions(
+    apiKey: _getApiKey(),
+    appId: FirebaseOptionsConfig.appId,
+    messagingSenderId: FirebaseOptionsConfig.messagingSenderId,
+    projectId: FirebaseOptionsConfig.projectId,
+    storageBucket: FirebaseOptionsConfig.storageBucket,
+    iosClientId: FirebaseOptionsConfig.iosClientId,
+    iosBundleId: FirebaseOptionsConfig.iosBundleId,
   );
+  
+  // Helper method to get API key from environment or config
+  static String _getApiKey() {
+    // Try to get from .env file first
+    final envApiKey = dotenv.env['FIREBASE_API_KEY'];
+    if (envApiKey != null && envApiKey.isNotEmpty) {
+      return envApiKey;
+    }
+    // Fall back to config file
+    return FirebaseOptionsConfig.apiKey;
+  }
 }
