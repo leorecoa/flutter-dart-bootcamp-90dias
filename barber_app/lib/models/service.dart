@@ -20,6 +20,32 @@ class Service {
   });
 
   bool get hasDiscount => discountPrice > 0 && discountPrice < price;
+  
+  factory Service.fromMap(Map<String, dynamic> map) {
+    return Service(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      price: (map['price'] ?? 0.0).toDouble(),
+      discountPrice: (map['discountPrice'] ?? 0.0).toDouble(),
+      durationMinutes: map['durationMinutes'] ?? 30,
+      imageUrl: map['imageUrl'] ?? '',
+      isPromotion: map['isPromotion'] ?? false,
+    );
+  }
+  
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'discountPrice': discountPrice,
+      'durationMinutes': durationMinutes,
+      'imageUrl': imageUrl,
+      'isPromotion': isPromotion,
+    };
+  }
 }
 
 // Lista de serviços pré-definidos

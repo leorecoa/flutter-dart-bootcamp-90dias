@@ -169,7 +169,7 @@ class _UsageMonitorScreenState extends State<UsageMonitorScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
+                  color: color.withAlpha(51), // 0.2 * 255 = 51
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -187,7 +187,7 @@ class _UsageMonitorScreenState extends State<UsageMonitorScreen> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: percentage / 100,
-              backgroundColor: Colors.grey.withOpacity(0.2),
+              backgroundColor: Colors.grey.withAlpha(51), // 0.2 * 255 = 51
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
               minHeight: 8,
             ),

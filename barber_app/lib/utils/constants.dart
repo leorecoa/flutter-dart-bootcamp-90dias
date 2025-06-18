@@ -9,6 +9,7 @@ class AppColors {
   static const Color cardBackground = Color(0xFF2A2A2A);
   static const Color textPrimary = Color(0xFFF5F5F5);
   static const Color textSecondary = Color(0xFFB0B0B0);
+  static const Color divider = Color(0xFF3A3A3A);
 }
 
 // Estilos de texto

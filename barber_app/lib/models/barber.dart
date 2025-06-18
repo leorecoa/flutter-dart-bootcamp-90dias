@@ -16,6 +16,30 @@ class Barber {
     required this.rating,
     this.available = true,
   });
+  
+  factory Barber.fromMap(Map<String, dynamic> map) {
+    return Barber(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
+      whatsapp: map['whatsapp'] ?? '',
+      specialties: List<String>.from(map['specialties'] ?? []),
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      available: map['available'] ?? true,
+    );
+  }
+  
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'imageUrl': imageUrl,
+      'whatsapp': whatsapp,
+      'specialties': specialties,
+      'rating': rating,
+      'available': available,
+    };
+  }
 }
 
 // Lista de barbeiros pré-definidos

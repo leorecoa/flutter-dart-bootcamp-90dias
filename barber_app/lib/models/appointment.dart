@@ -37,5 +37,10 @@ enum AppointmentStatus {
   pending,
   confirmed,
   completed,
-  cancelled
+  cancelled;
+  
+  @override
+  String toString() {
+    return 'AppointmentStatus.$name';
+  }
 }
