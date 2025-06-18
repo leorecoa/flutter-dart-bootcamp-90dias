@@ -1,8 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'models/barber.dart';
+import 'models/service.dart';
+import 'models/user.dart';
 import 'screens/splash_screen.dart';
+import 'services/appointment_service.dart';
 import 'services/auth_service.dart';
+import 'services/barber_service.dart';
+import 'services/firebase_service.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -22,8 +31,15 @@ void main() async {
     ),
   );
 
-  // Inicializar serviço de autenticação
+  // Inicializar Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Inicializar serviços
+  await FirebaseService().init();
   await AuthService().init();
+  await BarberService().init();
 
   runApp(const BarberApp());
 }
@@ -33,54 +49,79 @@ class BarberApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Barber Shop',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: AppColors.background,
-        primaryColor: AppColors.primary,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
+    return MultiProvider(
+      providers: [
+        // Auth service provider
+        StreamProvider<User?>.value(
+          value: AuthService().authStateChanges,
+          initialData: null,
         ),
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme.apply(
-                bodyColor: AppColors.textPrimary,
-                displayColor: AppColors.textPrimary,
-              ),
+        // Barber service providers
+        Provider<BarberService>(
+          create: (_) => BarberService(),
         ),
-        inputDecorationTheme: InputDecorationTheme(
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: AppColors.secondary, width: 2),
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: AppColors.textSecondary.withAlpha(128)),
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: AppColors.accent),
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: AppColors.accent, width: 2),
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          ),
+        StreamProvider<List<Barber>>.value(
+          value: BarberService().barbersStream,
+          initialData: const [],
         ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
-            foregroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
+        StreamProvider<List<Service>>.value(
+          value: BarberService().servicesStream,
+          initialData: const [],
+        ),
+        // Appointment service provider
+        Provider<AppointmentService>(
+          create: (_) => AppointmentService(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Barber Shop',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: AppColors.background,
+          primaryColor: AppColors.primary,
+          colorScheme: const ColorScheme.dark(
+            primary: AppColors.primary,
+            secondary: AppColors.secondary,
+          ),
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme.apply(
+                  bodyColor: AppColors.textPrimary,
+                  displayColor: AppColors.textPrimary,
+                ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: const TextStyle(color: AppColors.textSecondary),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColors.secondary, width: 2),
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            enabledBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: AppColors.textSecondary.withAlpha(128)),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColors.accent),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColors.accent, width: 2),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.secondary,
+              foregroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
           ),
         ),
+        home: const SplashScreen(),
       ),
-      home: const SplashScreen(),
     );
   }
 }
