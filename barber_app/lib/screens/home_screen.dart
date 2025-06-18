@@ -4,6 +4,8 @@ import '../utils/constants.dart';
 import '../widgets/promotion_card.dart';
 import '../widgets/service_card.dart';
 import 'appointment_screen.dart';
+import 'appointments_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -249,6 +251,17 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _currentIndex = index;
           });
+          
+          // Navegar para a tela correspondente
+          if (index == 1) { // Agendamentos
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AppointmentsScreen()),
+            );
+          } else if (index == 2) { // Perfil
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            );
+          }
         },
         backgroundColor: AppColors.primary,
         selectedItemColor: AppColors.secondary,

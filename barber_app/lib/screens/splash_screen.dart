@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import 'home_screen.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -34,8 +36,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
+        // Verificar se o usuário está logado
+        final currentUser = AuthService().currentUser;
+        
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(
+            builder: (_) => currentUser != null
+                ? const HomeScreen()
+                : const LoginScreen(),
+          ),
         );
       }
     });
@@ -68,11 +77,12 @@ class _SplashScreenState extends State<SplashScreen>
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.secondary, width: 3),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Image.asset(
-                        'assets/images/barber_pole.png',
-                        fit: BoxFit.contain,
+                    child: const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Icon(
+                        Icons.content_cut,
+                        color: AppColors.secondary,
+                        size: 100,
                       ),
                     ),
                   ),

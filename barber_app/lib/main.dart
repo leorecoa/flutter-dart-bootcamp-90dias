@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/splash_screen.dart';
+import 'services/auth_service.dart';
 import 'utils/constants.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Configurar orientação do app para apenas retrato
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   // Configurar estilo da barra de status
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -20,7 +21,10 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  
+
+  // Inicializar serviço de autenticação
+  await AuthService().init();
+
   runApp(const BarberApp());
 }
 
@@ -52,7 +56,8 @@ class BarberApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.textSecondary.withAlpha(128)),
+            borderSide:
+                BorderSide(color: AppColors.textSecondary.withAlpha(128)),
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           errorBorder: OutlineInputBorder(
