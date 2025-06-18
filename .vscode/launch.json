@@ -1,0 +1,32 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "barber_app",
+            "cwd": "barber_app",
+            "request": "launch",
+            "type": "node",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "barber_app (profile mode)",
+            "cwd": "barber_app",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "barber_app (release mode)",
+            "cwd": "barber_app",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "flutterMode": "release"
+        }
+    ]
+}
