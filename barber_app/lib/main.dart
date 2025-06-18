@@ -1,18 +1,24 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'models/barber.dart';
 import 'models/service.dart';
 import 'models/user.dart';
+import 'screens/appointments_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/signup_screen.dart';
 import 'screens/splash_screen.dart';
+import 'services/analytics_service.dart';
 import 'services/appointment_service.dart';
 import 'services/auth_service.dart';
 import 'services/barber_service.dart';
 import 'services/firebase_service.dart';
 import 'utils/constants.dart';
+import 'utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +46,7 @@ void main() async {
   await FirebaseService().init();
   await AuthService().init();
   await BarberService().init();
+  await AnalyticsService().init();
 
   runApp(const BarberApp());
 }
@@ -76,51 +83,15 @@ class BarberApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Barber Shop',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: AppColors.background,
-          primaryColor: AppColors.primary,
-          colorScheme: const ColorScheme.dark(
-            primary: AppColors.primary,
-            secondary: AppColors.secondary,
-          ),
-          textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme.apply(
-                  bodyColor: AppColors.textPrimary,
-                  displayColor: AppColors.textPrimary,
-                ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            labelStyle: const TextStyle(color: AppColors.textSecondary),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.secondary, width: 2),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: AppColors.textSecondary.withAlpha(128)),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.accent),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.accent, width: 2),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.secondary,
-              foregroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-          ),
-        ),
+        theme: AppTheme.darkTheme,
         home: const SplashScreen(),
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/signup': (context) => const SignupScreen(),
+          '/profile': (context) => const ProfileScreen(),
+          '/appointments': (context) => const AppointmentsScreen(),
+        },
       ),
     );
   }

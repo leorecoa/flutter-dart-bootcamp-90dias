@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
+import 'admin/usage_monitor_screen.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -170,6 +171,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Implement delete account
               },
             ),
+            
+            // Firebase usage monitor (admin only)
+            if (_user?.email == 'admin@example.com')
+              _buildActionCard(
+                icon: Icons.analytics,
+                title: 'Monitorar Uso do Firebase',
+                color: Colors.blue,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UsageMonitorScreen(),
+                    ),
+                  );
+                },
+              ),
 
             const SizedBox(height: 32),
 
