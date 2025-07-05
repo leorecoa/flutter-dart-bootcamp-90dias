@@ -28,7 +28,7 @@ Repositório criado para documentar minha jornada de aprendizado na linguagem Da
 | ... |                                        | 🚧 Em Progresso |
 | 90  | Projeto Final                          | 🚀           |
 
-*(Vou atualizar diariamente.)*
+
 
 ---
 
